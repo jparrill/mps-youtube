@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+  mps-youtube:
+    image: andrey01/mps-youtube
+    read_only: true
+    network_mode: bridge
+    volumes:
+      - $XDG_RUNTIME_DIR/pulse:/run/user/1000/pulse:ro
+    environment:
+      - PULSE_SERVER=unix:$XDG_RUNTIME_DIR/pulse/native

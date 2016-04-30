@@ -1,0 +1,34 @@
+# Problem: mpv neither mplayer compiled with the pulseaudio
+#
+
+FROM alpine:3.3
+MAINTAINER Andrey Arapov <andrey.arapov@nixaid.com>
+
+RUN echo '@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories && \
+    apk update && \
+    apk add python3 py-virtualenv ca-certificates mpv pulseaudio@testing
+
+# Workaround: pulseaudio client library likes to remove /dev/shm/pulse-shm-*
+#             files created by the host, causing sound to stop working.
+#             To fix this, we either want to disable the shm or mount /dev/shm
+#             in read-only mode when starting the container.
+RUN echo "enable-shm = no" >> /etc/pulse/client.conf
+
+ENV USER user
+ENV UID 1000
+ENV GROUPS audio
+ENV HOME /home/$USER
+RUN adduser -D -h $HOME -s /bin/false -G $GROUPS -u $UID $USER
+
+USER $USER
+WORKDIR $HOME
+
+RUN virtualenv -p python3 venv && \
+    . venv/bin/activate && \
+    pip install --upgrade pip && \
+    pip install mps-youtube youtube-dl && \
+    deactivate &&\
+    mkdir $HOME/.config
+
+VOLUME [ "/tmp", "$HOME/.config" ]
+ENTRYPOINT [ "./venv/bin/mpsyt" ]
