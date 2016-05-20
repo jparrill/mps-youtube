@@ -11,10 +11,13 @@ Running [mps-youtube](https://github.com/mps-youtube/mps-youtube) in Docker
 docker-compose run --rm mps-youtube
 ```
 
-You can use the following alias and place it to your `~/.bash_aliases` file
-
+Place the following alias to your `~/.bash_aliases` file  
 ```
-alias mps-youtube='(cd ~/docker/mps-youtube; docker-compose run --rm mps-youtube)'
+alias docker="sudo -E docker"
+alias docker-compose="sudo -E docker-compose"
+
+function docker_helper_fg() { { pushd ~/docker/$1; docker-compose rm -fa "$1"; docker-compose run --name "$1" "$@"; popd; } }
+function mps-youtube() { { docker_helper_fg $FUNCNAME $@; } }
 ```
 
 ### with Docker
