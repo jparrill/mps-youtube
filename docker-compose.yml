@@ -7,5 +7,6 @@ services:
     network_mode: bridge
     volumes:
       - $XDG_RUNTIME_DIR/pulse:/run/user/1000/pulse:ro
+      - $HOME/Downloads:/home/user/mps
     environment:
       - PULSE_SERVER=unix:$XDG_RUNTIME_DIR/pulse/native
