@@ -2,7 +2,8 @@ FROM ubuntu:xenial
 MAINTAINER Andrey Arapov <andrey.arapov@nixaid.com>
 
 RUN apt-get update && \
-    apt-get -y install python3 virtualenv mpv paxctl
+    apt-get -y install python3 virtualenv mpv paxctl && \
+    apt-get clean all
 
 # Workaround: pulseaudio client library likes to remove /dev/shm/pulse-shm-*
 #             files created by the host, causing sound to stop working.
